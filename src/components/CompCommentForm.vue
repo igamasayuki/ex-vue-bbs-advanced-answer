@@ -22,7 +22,7 @@
 
 <script lang="ts">
 import { Prop, Component, Vue } from "vue-property-decorator";
-import { Comment } from "@/types/comment";
+import axios from "axios";
 
 /**
  * コメントフォームコンポーネント.
@@ -45,10 +45,10 @@ export default class CompCommentForm extends Vue {
   /**
    * コメントを追加する.
    *
-   * @param articleId : 記事ID
+   * @param articleId - 記事ID
+   * @returns Promiseオブジェクト
    */
-  addComment(articleId: number): void {
-    // (上級課題)入力値チェック
+  async addComment(articleId: number): Promise<void> {
     // 今までのエラーメッセージを削除
     this.commentNameErrorMessage = "";
     this.commentContentErrorMessage = "";
@@ -76,18 +76,11 @@ export default class CompCommentForm extends Vue {
       return;
     }
 
-    // 正常処理
-    // ミューテーションのaddCommentメソッドを呼ぶ
-    // ※この時渡すコメントIDはnullで良い
-    // 第２引数には「名前：値,・・・」のオブジェクト形式で渡す
-    // ミューテーションに渡す引数のことを「ペイロード」という
-    this.$store.commit("addComment", {
-      comment: new Comment(
-        -1,
-        this.commentName,
-        this.commentContent,
-        articleId
-      ),
+    // コメントを追加するWebAPIを呼ぶ
+    await axios.post("http://153.127.48.168:8080/ex-bbs-api/bbs/comment", {
+      name: this.commentName,
+      content: this.commentContent,
+      articleId: articleId,
     });
     // 入力値をフォームからクリアする
     this.commentName = "";

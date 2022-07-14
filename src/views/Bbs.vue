@@ -74,15 +74,7 @@ export default class Bbs extends Vue {
    * @remarks 初期画面表示時に呼ばれる
    */
   created(): void {
-    this["$store"].dispatch("getArticleList");
-  }
-
-  /**
-   * 記事一覧をWebAPIからVuexストアにセットする.
-   * @remarks 記事やコメント追加、削除時にはcreatedが呼ばれないためこちらを実装
-   */
-  updated(): void {
-    this["$store"].dispatch("getArticleList");
+    this.$store.dispatch("getArticleList");
   }
 
   /**
@@ -138,6 +130,9 @@ export default class Bbs extends Vue {
     // 入力値をフォームからクリアする
     this.articleName = "";
     this.articleContent = "";
+
+    // 一覧取得
+    this.$store.dispatch("getArticleList");
   }
 
   /**
@@ -151,6 +146,9 @@ export default class Bbs extends Vue {
     let targetUrl =
       "http://153.127.48.168:8080/ex-bbs-api/bbs/article/" + articleId;
     await axios.delete(targetUrl);
+
+    // 一覧取得
+    this.$store.dispatch("getArticleList");
   }
 }
 </script>

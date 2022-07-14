@@ -85,6 +85,9 @@ export default class CompCommentForm extends Vue {
     // 入力値をフォームからクリアする
     this.commentName = "";
     this.commentContent = "";
+
+    // 一覧取得
+    this.$store.dispatch("getArticleList");
   }
 }
 </script>

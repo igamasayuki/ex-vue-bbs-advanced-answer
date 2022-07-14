@@ -33,14 +33,10 @@
       </form>
       <br />
 
-      <div v-for="comment of article.commentList" v-bind:key="comment.id">
-        <div>コメント者名：{{ comment.name }}</div>
-        <div>
-          コメント内容：
-          <pre>{{ comment.content }}</pre>
-        </div>
-      </div>
+      <!-- コメント表示コンポーネント -->
+      <CompShowComment v-bind:comment-list="article.commentList" />
 
+      <!-- コメントフォームコンポーネント -->
       <CompCommentForm v-bind:aritcle-id="article.id" />
 
       <hr />
@@ -53,9 +49,11 @@ import { Article } from "@/types/article";
 import axios from "axios";
 import { Component, Vue } from "vue-property-decorator";
 import CompCommentForm from "@/components/CompCommentForm.vue";
+import CompShowComment from "@/components/CompShowComment.vue";
 
 @Component({
   components: {
+    CompShowComment,
     CompCommentForm,
   },
 })

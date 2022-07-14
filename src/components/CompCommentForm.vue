@@ -31,16 +31,16 @@ import axios from "axios";
 export default class CompCommentForm extends Vue {
   // 親コンポーネントから受け取る記事ID
   @Prop()
-  private aritcleId!: number;
+  aritcleId!: number;
 
   // コメント者名
-  private commentName = "";
+  commentName = "";
   // コメント者名エラーメッセージ
-  private commentNameErrorMessage = "";
+  commentNameErrorMessage = "";
   // コメント内容
-  private commentContent = "";
+  commentContent = "";
   // コメント内容エラーメッセージ
-  private commentContentErrorMessage = "";
+  commentContentErrorMessage = "";
 
   /**
    * コメントを追加する.

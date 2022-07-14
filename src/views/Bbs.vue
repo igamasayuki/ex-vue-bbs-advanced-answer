@@ -1,23 +1,7 @@
 <template>
   <div class="container">
     <h1>掲示板アプリケーション(Vue.js版)</h1>
-    <form>
-      <div class="error">
-        {{ articleNameErrorMessage }}
-      </div>
-      <div>投稿者名：<input type="text" v-model="articleName" /></div>
-      <div class="error">
-        {{ articleContentErrorMessage }}
-      </div>
-      <div>
-        投稿内容：<textarea
-          v-model="articleContent"
-          rows="5"
-          cols="25"
-        ></textarea>
-      </div>
-      <button type="button" v-on:click="addArticle()">記事投稿</button>
-    </form>
+    <CompArticleForm />
     <hr />
     <div v-for="article of currentArticleList" v-bind:key="article.id">
       <div>記事ID：{{ article.id }}</div>
@@ -48,25 +32,18 @@
 import { Article } from "@/types/article";
 import axios from "axios";
 import { Component, Vue } from "vue-property-decorator";
+import CompArticleForm from "@/components/CompArticleForm.vue";
 import CompCommentForm from "@/components/CompCommentForm.vue";
 import CompShowComment from "@/components/CompShowComment.vue";
 
 @Component({
   components: {
+    CompArticleForm,
     CompShowComment,
     CompCommentForm,
   },
 })
 export default class Bbs extends Vue {
-  // 投稿者名
-  private articleName = "";
-  // 投稿者名エラーメッセージ
-  private articleNameErrorMessage = "";
-  // 投稿内容
-  private articleContent = "";
-  // 投稿内容エラーメッセージ
-  private articleContentErrorMessage = "";
-
   /**
    * 記事一覧をWebAPIからVuexストアにセットする.
    * @remarks 初期画面表示時に呼ばれる
@@ -84,53 +61,6 @@ export default class Bbs extends Vue {
    */
   get currentArticleList(): Array<Article> {
     return this.$store.getters.getArticles;
-  }
-
-  /**
-   * 記事を追加する.
-   *
-   * @returns Promiseオブジェクト
-   */
-  async addArticle(): Promise<void> {
-    // 今までのエラーメッセージを削除
-    this.articleNameErrorMessage = "";
-    this.articleContentErrorMessage = "";
-
-    let hasErrors = false;
-    if (this.articleName === "") {
-      this.articleNameErrorMessage = "投稿者名を入力してください";
-      hasErrors = true;
-    } else if (50 < this.articleName.length) {
-      this.articleNameErrorMessage = "投稿者名は50文字以内で入力してください";
-      hasErrors = true;
-    }
-
-    if (this.articleContent === "") {
-      this.articleContentErrorMessage = "投稿内容を入力してください";
-      hasErrors = true;
-    } else if (50 < this.articleContent.length) {
-      this.articleContentErrorMessage =
-        "投稿内容は50文字以内で入力してください";
-      hasErrors = true;
-    }
-
-    if (hasErrors) {
-      // エラーがひとつでもあった場合は追加しない
-      return;
-    }
-
-    // 記事投稿WebAPIを呼ぶ
-    await axios.post("http://153.127.48.168:8080/ex-bbs-api/bbs/article", {
-      name: this.articleName,
-      content: this.articleContent,
-    });
-
-    // 入力値をフォームからクリアする
-    this.articleName = "";
-    this.articleContent = "";
-
-    // 一覧取得
-    this.$store.dispatch("getArticleList");
   }
 
   /**

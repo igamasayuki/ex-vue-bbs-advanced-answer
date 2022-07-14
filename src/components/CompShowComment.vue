@@ -18,7 +18,7 @@ import { Comment } from "@/types/comment";
  * コメントフォームコンポーネント.
  */
 @Component
-export default class CompCommentForm extends Vue {
+export default class CompShowComment extends Vue {
   // 親コンポーネントから受け取る記事ID
   @Prop()
   commentList!: Array<Comment>;

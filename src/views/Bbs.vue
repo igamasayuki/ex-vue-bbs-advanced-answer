@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <h1>掲示板アプリケーション(Vue.js版)</h1>
+    <!-- 記事投稿フォームコンポーネント -->
     <CompArticleForm />
     <hr />
     <div v-for="article of currentArticleList" v-bind:key="article.id">
@@ -10,17 +11,14 @@
         投稿内容：
         <pre>{{ article.content }}</pre>
       </div>
-      <form>
-        <button type="button" v-on:click="deleteArticle(article.id)">
-          記事削除
-        </button>
-      </form>
+      <!-- 記事削除フォームコンポーネント -->
+      <CompDeleteArticleForm v-bind:aritcle-id="article.id" />
       <br />
 
       <!-- コメント表示コンポーネント -->
       <CompShowComment v-bind:comment-list="article.commentList" />
 
-      <!-- コメントフォームコンポーネント -->
+      <!-- コメント投稿フォームコンポーネント -->
       <CompCommentForm v-bind:aritcle-id="article.id" />
 
       <hr />
@@ -30,15 +28,16 @@
 
 <script lang="ts">
 import { Article } from "@/types/article";
-import axios from "axios";
 import { Component, Vue } from "vue-property-decorator";
 import CompArticleForm from "@/components/CompArticleForm.vue";
+import CompDeleteArticleForm from "@/components/CompDeleteArticleForm.vue";
 import CompCommentForm from "@/components/CompCommentForm.vue";
 import CompShowComment from "@/components/CompShowComment.vue";
 
 @Component({
   components: {
     CompArticleForm,
+    CompDeleteArticleForm,
     CompShowComment,
     CompCommentForm,
   },
@@ -61,22 +60,6 @@ export default class Bbs extends Vue {
    */
   get currentArticleList(): Array<Article> {
     return this.$store.getters.getArticles;
-  }
-
-  /**
-   * 記事を削除する.
-   *
-   * @param articleId - 記事ID
-   * @returns Promiseオブジェクト
-   */
-  async deleteArticle(articleId: number): Promise<void> {
-    // 記事を削除するWebAPIを呼ぶ
-    let targetUrl =
-      "http://153.127.48.168:8080/ex-bbs-api/bbs/article/" + articleId;
-    await axios.delete(targetUrl);
-
-    // 一覧取得
-    this.$store.dispatch("getArticleList");
   }
 }
 </script>

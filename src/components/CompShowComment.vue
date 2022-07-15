@@ -19,7 +19,7 @@ import { Comment } from "@/types/comment";
  */
 @Component
 export default class CompShowComment extends Vue {
-  // 親コンポーネントから受け取る記事ID
+  // 親コンポーネントから受け取るコメントリスト
   @Prop()
   commentList!: Array<Comment>;
 }
